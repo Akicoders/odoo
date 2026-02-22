@@ -13,6 +13,7 @@ RUN useradd -m -u 1000 -s /bin/bash odoo
 WORKDIR /odoo
 
 COPY --chown=odoo:odoo requirements.txt .
+RUN pip install --no-cache-dir setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=odoo:odoo . .
