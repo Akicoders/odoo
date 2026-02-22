@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo
+    restart: unless-stopped
+    ports:
+      - "8069:8069"
+      - "8071:8071"
+      - "8072:8072"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - odoo-logs:/var/log/odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - odoo-network
+
+  db:
+    image: postgres:16
+    container_name: odoo-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  odoo-data:
+  odoo-logs:
+  db-data:
+
+networks:
+  odoo-network:
+    driver: bridge
