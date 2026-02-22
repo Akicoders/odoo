@@ -8,14 +8,15 @@ RUN apt-get update && apt-get install -y \
     xvfb xfonts-75dpi xfonts-base \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -r requirements.txt || \
+    (pip install --no-cache-dir setuptools && pip install --no-cache-dir -r requirements.txt)
+
 RUN useradd -m -u 1000 -s /bin/bash odoo
 
 WORKDIR /odoo
 
 COPY --chown=odoo:odoo requirements.txt .
-RUN pip install --no-cache-dir setuptools wheel
-RUN pip install --no-cache-dir -r requirements.txt
-
 COPY --chown=odoo:odoo . .
 
 RUN mkdir -p /var/lib/odoo /var/log/odoo /etc/odoo && \
