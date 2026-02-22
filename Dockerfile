@@ -4,6 +4,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev \
     libpq-dev libjpeg-dev libfreetype6-dev \
     node-less npm git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wkhtmltopdf \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -u 1000 -s /bin/bash odoo
