@@ -1,10 +1,11 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 RUN apt-get update && apt-get install -y \
     libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev \
     libpq-dev libjpeg-dev libfreetype6-dev \
     node-less npm git curl \
     wkhtmltopdf \
+    xvfb xfonts-75dpi xfonts-base \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 -s /bin/bash odoo
@@ -17,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --chown=odoo:odoo . .
 
 RUN mkdir -p /var/lib/odoo /var/log/odoo /etc/odoo && \
-    chown -R odoo:odoo /var/lib/odoo /var/log/odoo
+    chown -R odoo:odoo /var/lib/odoo /var/log/odoo /etc/odoo
 
 COPY --chown=odoo:odoo debian/odoo.conf /etc/odoo/odoo.conf
 
