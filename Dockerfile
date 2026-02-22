@@ -6,9 +6,18 @@ RUN apt-get update && apt-get install -y \
     node-less npm git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wkhtmltopdf \
-    && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y \
+    libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev \
+    libpq-dev libjpeg-dev libfreetype6-dev \
+    node-less npm git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -L -o /tmp/wkhtmltopdf.deb \
+    https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6.1/wkhtmltox_0.12.6.1-1.bookworm_amd64.deb \
+    && dpkg -i /tmp/wkhtmltopdf.deb \
+    || (apt-get install -f -y && dpkg -i /tmp/wkhtmltopdf.deb) \
+    && rm /tmp/wkhtmltopdf.deb \
     && useradd -m -u 1000 -s /bin/bash odoo
 
 WORKDIR /odoo
